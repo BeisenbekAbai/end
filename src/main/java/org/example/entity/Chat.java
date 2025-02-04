@@ -12,6 +12,15 @@ public class Chat {
         this.isGroup = isGroup;
     }
 
+    @Override
+    public String toString() {
+        return "Chat{" +
+                "chatId='" + chatId + '\'' +
+                ", chatName='" + chatName + '\'' +
+                ", isGroup=" + isGroup +
+                '}';
+    }
+
     // Getters:
     public String getChatId() {
         return chatId;
