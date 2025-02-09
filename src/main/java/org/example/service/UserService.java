@@ -7,14 +7,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UserService {
     private final DatabaseManager dbManager;
 
-    private static final String  INSERT_USER = "insert into users(userid, username, email, password) values(?,?,?,?)";
+    private static final String INSERT_USER = "insert into users(userid, username, email, password) values(?,?,?,?)";
     private static final String SELECT_USER = "select * from users where email = ? and password = ?";
     private static final String SELECT_USER_BY_ID = "select * from users where userid = ?";
+    private static final String SELECT_ALL_USERS = "select * from users";
 
     // Constructor
     public UserService(DatabaseManager dbManager) {
@@ -60,5 +62,17 @@ public class UserService {
             }
         }
         return user;
+    }
+
+    // Select all users id
+    public List<String> getAllUsersId() throws SQLException {
+        List<String> users = new ArrayList<>();
+        try (PreparedStatement stmt = dbManager.getConnection().prepareStatement(SELECT_ALL_USERS)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(rs.getString("userid"));
+            }
+        }
+        return users;
     }
 }

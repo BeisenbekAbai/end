@@ -7,29 +7,31 @@ import org.example.service.ChatService;
 import org.example.service.UserService;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ChatsMenuController {
     private User mainUser;
-    private DatabaseManager dbManager;
-    Scanner scanner = new Scanner(System.in);
+    private final DatabaseManager dbManager;
+    private List<String> orderedChatsList = new ArrayList<>();
 
     // Constructor
     public ChatsMenuController(DatabaseManager dbManager) {
         this.dbManager = dbManager;
+
     }
 
     // Setter
     public void setUser(User user) {
+        orderedChatsList = new ArrayList<>();
         this.mainUser = user;
     }
 
     // Display chats
     public void displayChats() throws SQLException {
         ChatService chatService = new ChatService(dbManager);
-        List<Chat> chats = chatService.getChats(mainUser.getUserId());
-        int action;
+        List<Chat> chats = chatService.getPermittedChats(mainUser.getUserId());
+        orderedChatsList = new ArrayList<>();
         //Display list of chats
         System.out.println("Chats: ");
         for (int i = 0; i < chats.size(); i++) {
@@ -41,19 +43,21 @@ public class ChatsMenuController {
                 for (String participant : participants) {
                     User user = userService.getUserById(participant);
                     if (!user.getUserName().equals(mainUser.getUserName())) {
-                        System.out.println(3+i + ". " + user.getUserName());
+                        System.out.println(4+i + ". " + user.getUserName());
                     }
                 }
             }
             // Display group name
             else {
-                System.out.println(3+i + ". " + chat.getChatName());
+                System.out.println(4+i + ". " + chat.getChatName());
             }
+            orderedChatsList.add(chat.getChatId());
         }
-        action = scanner.nextInt() - 2;
-        switch (action) {
-            case 1:
-                break;
-        }
+    }
+
+    // Open chat
+    public void openChat(int chatsOrder) throws SQLException {
+        ChatController chatController = new ChatController(dbManager, orderedChatsList.get(chatsOrder - 4), mainUser.getUserId());
+        chatController.start();
     }
 }

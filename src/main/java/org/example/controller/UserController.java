@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class UserController {
-    private DatabaseManager dbManager;
+    private final DatabaseManager dbManager;
     Scanner scanner = new Scanner(System.in);
 
     // Constructor

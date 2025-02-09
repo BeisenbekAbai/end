@@ -1,22 +1,20 @@
 package org.example;
 
 import org.example.controller.ChatsMenuController;
+import org.example.controller.CreateGroupController;
+import org.example.controller.FindUserController;
 import org.example.controller.UserController;
-import org.example.entity.Chat;
 import org.example.entity.User;
-import org.example.service.ChatService;
 
-import javax.security.auth.login.CredentialException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Scanner;
 
 public class App {
     // To add space between dialog boxes
     public static void addSpace() {
-        System.out.println(" ");
+        System.out.println();
         System.out.println("===============================");
-        System.out.println(" ");
+        System.out.println();
     }
 
     public static void main( String[] args ) {
@@ -51,6 +49,8 @@ public class App {
         try {
             DatabaseManager dbManager = new DatabaseManager();
             UserController userController = new UserController(dbManager);
+            FindUserController findUserController = new FindUserController(dbManager);
+            CreateGroupController createGroupController = new CreateGroupController(dbManager);
             ChatsMenuController chatsMenuController = new ChatsMenuController(dbManager);
             dbManager.connect();
             while(true) {
@@ -76,17 +76,40 @@ public class App {
                 addSpace();
                 if(user != null) {
                     chatsMenuController.setUser(user);
+                    findUserController.setMainUserId(user.getUserId());
+                    createGroupController.setMainUserId(user.getUserId());
                 }
                 // Chats menu
                 while (user != null) {
-                    System.out.println("Choose action: ");
+                    System.out.println("Choose action");
                     System.out.println("1. Logout");
-                    System.out.println("2. Create Group");
+                    System.out.println("2. Find user");
+                    System.out.println("3. Create Group");
                     System.out.println(" ");
                     chatsMenuController.displayChats();
-                    break;
+                    System.out.println(" ");
+                    int action2 = scanner.nextInt();
+                    switch(action2) {
+                        case 1:
+                            user = null;
+                            addSpace();
+                            break;
+                        case 2:
+                            findUserController.setQuit(false);
+                            findUserController.run();
+                            addSpace();
+                            break;
+                        case 3:
+                            createGroupController.setQuit(false);
+                            createGroupController.run();
+                            addSpace();
+                            break;
+                        default:
+                            System.out.println(" ");
+                            chatsMenuController.openChat(action2);
+                            break;
+                    }
                 }
-                addSpace();
             }
         } catch (SQLException | InterruptedException e) {
             throw new RuntimeException(e);

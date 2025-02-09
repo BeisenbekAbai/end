@@ -25,11 +25,9 @@ public class Chat {
     public String getChatId() {
         return chatId;
     }
-
     public String getChatName() {
         return chatName;
     }
-
     public boolean isGroup() {
         return isGroup;
     }
@@ -38,11 +36,9 @@ public class Chat {
     public void setChatId(String chatId) {
         this.chatId = chatId;
     }
-
     public void setChatName(String chatName) {
         this.chatName = chatName;
     }
-
     public void setGroup(boolean group) {
         isGroup = group;
     }
